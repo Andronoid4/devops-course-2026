@@ -13,3 +13,6 @@ install -m 440 /tmp/devops-sudo /etc/sudoers.d/devops
 hostnamectl set-hostname devops-vm
 sed -i '/^127.0.1.1/d' /etc/hosts
 echo '127.0.1.1 devops-vm.devops.local devops-vm' >>/etc/hosts
+
+printf 'manage_etc_hosts: false\n' >/etc/cloud/cloud.cfg.d/99-devops-hosts.cfg
+sed -i 's/^127.0.1.1.*/127.0.1.1 devops-vm.devops.local devops-vm/' /etc/cloud/templates/hosts.debian.tmpl

@@ -28,15 +28,18 @@ PermitEmptyPasswords no, MaxAuthTries 3, LoginGraceTime 30, AllowUsers devops,
 X11Forwarding no, ClientAliveInterval 300, ClientAliveCountMax 2.
 Ранний префикс 00 обеспечивает приоритет перед cloud-init. ssh.socket отключается,
 ssh.service включается. До перезапуска выполняется sshd -t; результат проверяется sshd -T и ss.
-Резервный канал управления: multipass exec devops-vm -- sudo COMMAND.
+После смены SSH-порта Multipass не может использовать свой внутренний SSH на 22.
+Управление выполняется через ssh devops. Для автоматического запуска используется явный unit
+/etc/systemd/system/ssh.service (scripts/ssh-persistent.sh). Файл шаблона hosts cloud-init
+исправлен, чтобы hostname -f сохранялся после перезапуска.
 
 ## 6. Межсетевой экран
 default deny incoming, allow outgoing; LIMIT 2222/tcp, ALLOW 80/tcp и 443/tcp; logging medium.
 Порты приложения 5000 и 8001 публикуются Docker только на 127.0.0.1; порты БД не публикуются.
 
 ## 7. Снимки состояния
-Координатор создаёт снимки при остановленной VM: 01-clean-install, 02-keys-configured,
-03-ssh-hardened, 04-nginx-https, 05-docker-compose, 06-before-kr2, 07-kr2.
+Координатор создаёт снимки при остановленной VM: s01-clean-install, s02-keys-configured,
+s03-ssh-persistent, s04-nginx-https, s05-docker-compose, s06-before-kr2, s07-kr2.
 Созданные снимки нужно проверять командой multipass info devops-vm --snapshots.
 
 ## 8. Веб-сервер
