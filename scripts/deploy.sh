@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-trap 'echo "Ошибка доставки" >&2' ERR
+trap 'echo "Ошибка доставки" >&2; exit 1' ERR
 ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel)
 cd "$ROOT"
 DRY=0
